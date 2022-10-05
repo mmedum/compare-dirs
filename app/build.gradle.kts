@@ -34,5 +34,5 @@ testing {
 
 application {
     // Define the main class for the application.
-    mainClass.set("compare.dirs.App")
+    mainClass.set("compare.dirs.Main")
 }
