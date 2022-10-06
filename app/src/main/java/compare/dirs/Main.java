@@ -30,9 +30,19 @@ public class Main {
                         .forEach(f -> {
                             String name = f.getName();
                             String path = f.getPath();
-                            long size = f.length();
+                            long size = Long.MIN_VALUE;
+
+                            try (Stream<Path> subStream = Files.walk(Paths.get(path))) {
+                                size = subStream.filter(p -> p.toFile().isFile())
+                                        .mapToLong(p -> p.toFile().length())
+                                        .sum();
+                            } catch (IOException e) {
+                                System.err.println("Not possible to find subpath");
+                            }
+
                             if (directories.containsKey(name)) {
                                 Node tempNode = directories.get(name);
+                                System.out.println("Comparing A: " + size + ", B: " + tempNode.getSize());
                                 if (size >= tempNode.getSize()) {
                                     System.out
                                             .println(tempNode.getName() + "@" + tempNode.getPath() + " to be deleted");
@@ -41,7 +51,7 @@ public class Main {
                                     System.out.println(name + "@" + path + " to be deleted");
                                 }
                             } else {
-                                directories.put(f.getName(), new Node(f.getName(), f.getPath(), f.length()));
+                                directories.put(name, new Node(name, path, size));
                             }
                         });
             } catch (IOException e) {
