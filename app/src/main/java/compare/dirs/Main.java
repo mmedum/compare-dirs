@@ -41,7 +41,7 @@ public class Main {
                                 System.err.println("Not possible to find subpath");
                             }
 
-                            if (directories.containsKey(name)) {
+                            if (size > 0 && directories.containsKey(name)) {
                                 Node tempNode = directories.get(name);
                                 System.out.println("Comparing A: " + name + " " + size + ", B: " + tempNode.getName()
                                         + " " + tempNode.getSize());
