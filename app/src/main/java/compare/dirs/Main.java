@@ -15,6 +15,7 @@ public class Main {
     public static void main(String[] args) {
         List<String> rootPaths = new ArrayList<>();
         Map<String, Node> directories = new HashMap<>();
+        List<String> deletions = new ArrayList<>();
 
         for (String arg : args) {
             rootPaths.add(arg.strip());
@@ -28,8 +29,8 @@ public class Main {
                 stream.map(f -> f.toFile())
                         .filter(f -> f.isDirectory())
                         .forEach(f -> {
-                            String name = f.getName();
-                            String path = f.getPath();
+                            String name = f.getName().toString();
+                            String path = f.getPath().toString();
                             long size = Long.MIN_VALUE;
 
                             try (Stream<Path> subStream = Files.walk(Paths.get(path))) {
@@ -43,14 +44,11 @@ public class Main {
 
                             if (size > 0 && directories.containsKey(name)) {
                                 Node tempNode = directories.get(name);
-                                System.out.println("Comparing A: " + name + " " + size + ", B: " + tempNode.getName()
-                                        + " " + tempNode.getSize());
                                 if (size >= tempNode.getSize()) {
-                                    System.out.println(
-                                            tempNode.getName() + " @ " + tempNode.getPath() + " to be deleted");
+                                    deletions.add(tempNode.getPath() + "@" + tempNode.getName());
                                     directories.put(name, new Node(name, path, size));
                                 } else {
-                                    System.out.println(name + "@" + path + " to be deleted");
+                                    deletions.add(path + "@" + name);
                                 }
                             } else {
                                 directories.put(name, new Node(name, path, size));
@@ -60,6 +58,8 @@ public class Main {
                 System.err.println("Cannot find path " + rootPath);
             }
         }
+
+        deletions.forEach(p -> System.out.println(p));
     }
 
     private static class Node {
