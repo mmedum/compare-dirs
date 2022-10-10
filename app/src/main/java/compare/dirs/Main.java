@@ -33,7 +33,8 @@ public class Main {
                             long size = Long.MIN_VALUE;
 
                             try (Stream<Path> subStream = Files.walk(Paths.get(path))) {
-                                size = subStream.filter(p -> p.toFile().isFile())
+                                size = subStream.filter(p -> Files.isRegularFile(p))
+                                        .filter(p -> p.getFileName().toString().endsWith(".mkv"))
                                         .mapToLong(p -> p.toFile().length())
                                         .sum();
                             } catch (IOException e) {
@@ -42,10 +43,11 @@ public class Main {
 
                             if (directories.containsKey(name)) {
                                 Node tempNode = directories.get(name);
-                                System.out.println("Comparing A: " + size + ", B: " + tempNode.getSize());
+                                System.out.println("Comparing A: " + name + " " + size + ", B: " + tempNode.getName()
+                                        + " " + tempNode.getSize());
                                 if (size >= tempNode.getSize()) {
-                                    System.out
-                                            .println(tempNode.getName() + "@" + tempNode.getPath() + " to be deleted");
+                                    System.out.println(
+                                            tempNode.getName() + " @ " + tempNode.getPath() + " to be deleted");
                                     directories.put(name, new Node(name, path, size));
                                 } else {
                                     System.out.println(name + "@" + path + " to be deleted");
