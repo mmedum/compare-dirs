@@ -34,7 +34,7 @@ public class Main {
                 stream.map(f -> f.toFile())
                         .filter(f -> f.isDirectory())
                         .forEach(f -> {
-                            String name = f.getName().toString();
+                            String name = f.getName().toString().toLowerCase();
                             String path = f.getPath().toString();
                             findDuplicates(name, path);
                             findRays(name, path);
