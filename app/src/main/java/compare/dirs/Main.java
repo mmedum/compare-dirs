@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class Main {
+public final class Main {
 
     private static Map<String, Node> directories;
     private static List<String> deletions;
@@ -54,7 +54,7 @@ public class Main {
     private static void findRays(String name, String path) {
         try (Stream<Path> subStream = Files.list(Paths.get(path))) {
             subStream.filter(p -> Files.isDirectory(p))
-                    .filter(p -> p.getFileName().toString().equals("BDMV"))
+                    .filter(p -> p.getFileName().toString().equalsIgnoreCase("BDMV"))
                     .forEach(p -> rays.add(path));
         } catch (IOException e) {
             System.err.println("Not possible to find subpath");
@@ -75,8 +75,8 @@ public class Main {
 
         if (size > 0 && directories.containsKey(name)) {
             Node tempNode = directories.get(name);
-            if (size >= tempNode.getSize()) {
-                deletions.add(tempNode.getPath());
+            if (size >= tempNode.size()) {
+                deletions.add(tempNode.path());
                 directories.put(name, new Node(path, size));
             } else {
                 deletions.add(path);
@@ -86,22 +86,7 @@ public class Main {
         }
     }
 
-    private static class Node {
-
-        private String path;
-        private long size;
-
-        public Node(String path, long size) {
-            this.path = path;
-            this.size = size;
-        }
-
-        public String getPath() {
-            return path;
-        }
-
-        public long getSize() {
-            return size;
-        }
-    }
+    private static record Node (
+        String path,
+        long size) {}
 }
