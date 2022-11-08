@@ -14,10 +14,10 @@ public final class Main {
 
     private static final Map<String, Node> directories = new HashMap<>();
     private static final List<String> deletions = new ArrayList<>();
-    private static List<String> rays = new ArrayList<>();
+    private static final List<String> rays = new ArrayList<>();
 
     public static void main(String[] args) {
-        List<String> rootPaths = new ArrayList<>();
+        final List<String> rootPaths = new ArrayList<>();
 
         for (String arg : args) {
             rootPaths.add(arg.strip());
@@ -71,7 +71,7 @@ public final class Main {
         }
 
         if (size > 0 && directories.containsKey(name)) {
-            Node tempNode = directories.get(name);
+            final Node tempNode = directories.get(name);
             if (size >= tempNode.size()) {
                 deletions.add(tempNode.path());
                 directories.put(name, new Node(path, size));
