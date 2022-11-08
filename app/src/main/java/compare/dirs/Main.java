@@ -12,15 +12,12 @@ import java.util.stream.Stream;
 
 public final class Main {
 
-    private static Map<String, Node> directories;
-    private static List<String> deletions;
-    private static List<String> rays;
+    private static final Map<String, Node> directories = new HashMap<>();
+    private static final List<String> deletions = new ArrayList<>();
+    private static List<String> rays = new ArrayList<>();
 
     public static void main(String[] args) {
         List<String> rootPaths = new ArrayList<>();
-        directories = new HashMap<>();
-        deletions = new ArrayList<>();
-        rays = new ArrayList<>();
 
         for (String arg : args) {
             rootPaths.add(arg.strip());
