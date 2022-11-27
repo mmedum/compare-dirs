@@ -34,14 +34,16 @@ public final class Main {
     for (final String rootPath : rootPaths) {
       try (Stream<Path> stream = Files.list(Paths.get(rootPath))) {
         System.out.println("Checking path: " + rootPath);
-        stream.map(f -> f.toFile())
+        stream
+            .map(f -> f.toFile())
             .filter(f -> f.isDirectory())
-            .forEach(f -> {
-              final String name = f.getName().toString().toLowerCase();
-              final String path = f.getPath().toString();
-              findDuplicates(name, path);
-              findRays(name, path);
-            });
+            .forEach(
+                f -> {
+                  final String name = f.getName().toString().toLowerCase();
+                  final String path = f.getPath().toString();
+                  findDuplicates(name, path);
+                  findRays(name, path);
+                });
       } catch (final IOException e) {
         System.err.println("Cannot find path " + rootPath);
       }
@@ -56,7 +58,9 @@ public final class Main {
 
   private static void findRays(final String name, final String path) {
     try (Stream<Path> subStream = Files.list(Paths.get(path))) {
-      subStream.filter(p -> Files.isDirectory(p))
+
+      subStream
+          .filter(p -> Files.isDirectory(p))
           .filter(p -> p.getFileName().toString().equalsIgnoreCase("BDMV"))
           .forEach(p -> rays.add(path));
     } catch (final IOException e) {
@@ -68,10 +72,12 @@ public final class Main {
     long size = Long.MIN_VALUE;
 
     try (Stream<Path> subStream = Files.list(Paths.get(path))) {
-      size = subStream.filter(p -> Files.isRegularFile(p))
-          .filter(p -> p.getFileName().toString().endsWith(".mkv"))
-          .mapToLong(p -> p.toFile().length())
-          .sum();
+      size =
+          subStream
+              .filter(p -> Files.isRegularFile(p))
+              .filter(p -> p.getFileName().toString().endsWith(".mkv"))
+              .mapToLong(p -> p.toFile().length())
+              .sum();
     } catch (final IOException e) {
       System.err.println("Not possible to find subpath");
     }
@@ -89,8 +95,5 @@ public final class Main {
     }
   }
 
-  private static record Node(
-      String path,
-      long size) {
-  }
+  private static record Node(String path, long size) {}
 }
